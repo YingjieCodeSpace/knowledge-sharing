@@ -1,32 +1,5 @@
 # Webpack Tips
 
-
-## process.env.NODE_ENV
-
-在webpack(>=4)中会根据mode参数来自动注入process.env.NODE_ENV全局常量：
-
-```
-mode: "development"
-process.env.NODE_ENV === ‘development’
-
-mode: "production"
-process.env.NODE_ENV === ‘production’
-```
-
-默认情况下webpack会将production作为mode的默认值。
-
-在webpack3或者以下，就需要使用插件webpack自带插件DefinePlugin来配置。
-
-```js
-plugins: [
- new webpack.DefinePlugin({ 
-   'process.env': {
- 	    NODE_ENV: JSON.stringify("production")
-    }
-  })
-]
-```
-
 ## Environment variables
 在Webpack中， 很多人会将webpack的运行时变量和注入到代码中的变量搞混淆，它们的区别如下：
 
@@ -63,7 +36,29 @@ new webpack.DefinePlugin({
 console.log('Running App version ' + VERSION);
 ```
 
-在webpack(>=4)中，根据mode参数不同，webpack会自动注入全局变量 `process.env.NODE_ENV`。
+在webpack(>=4)中，根据mode参数不同，webpack会自动注入全局常量 `process.env.NODE_ENV`。
+
+```
+mode: "development"
+process.env.NODE_ENV === ‘development’
+
+mode: "production"
+process.env.NODE_ENV === ‘production’
+```
+
+默认情况下webpack会将production作为mode的默认值。
+
+在webpack3或者以下，就需要使用插件webpack自带插件DefinePlugin来配置。
+
+```js
+plugins: [
+ new webpack.DefinePlugin({ 
+   'process.env': {
+ 	    NODE_ENV: JSON.stringify("production")
+    }
+  })
+]
+```
 
 __Warning:__
 > 当我们定义process的值时，尽量使用 `'process.env.NODE_ENV': JSON.stringify('production')`这种形式，而不要使用`process: { env: { NODE_ENV: JSON.stringify('production') } }`, 因为第二种方式会覆盖process object，进而影响一些依赖process object的第三方模块。
