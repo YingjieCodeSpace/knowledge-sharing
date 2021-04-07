@@ -23,9 +23,55 @@ plugins: [
   })
 ]
 ```
-## cross-env
+### cross-env
 
 windows不支持NODE_ENV=development的这样的设置方式, 使用 cross-env命令 就能根据操作系统决定以unix方式设置环境变量，还是windows。
+
+### Environment variables
+在Webpack中， 很多人会将webpack的运行时变量和注入到代码中的变量搞混淆，它们的区别如下：
+
+#### Webpack运行时变量
+
+webpack是由NodeJS执行的，所以在执行webpack时，可以用以下方式配置运行时变量:
+
+```sh
+CUSTOM_VAR=hello webpack --config webpack.config.js
+```
+
+由于操作系统的不同，导致上面的写法无法在windows下工作，在windows中，要用以下方式配置：
+
+```sh
+set CUSTOM_VAR=hello webpack --config webpack.config.js
+```
+
+为了解决不同操作系统的问题，我们可以引入cross-env，它将根据不同的操作系统来用相应的语法配置运行时变量：
+
+```sh
+cross-env CUSTOM_VAR=hello webpack --config webpack.config.js
+```
+
+#### 全局常量(Global constants)
+通过 Webpack 的 `DefinePlugin` 可以创建全局常量注入到代码中, 例如：
+
+```js
+new webpack.DefinePlugin({
+  VERSION: JSON.stringify('2021-03-07 v1'),
+});
+```
+
+```js
+console.log('Running App version ' + VERSION);
+```
+
+在webpack(>=4)中，根据mode参数不同，webpack会自动注入全局变量 `process.env.NODE_ENV`。
+
+__Warning:__
+> 当我们定义process的值时，尽量使用 `'process.env.NODE_ENV': JSON.stringify('production')`这种形式，而不要使用`process: { env: { NODE_ENV: JSON.stringify('production') } }`, 因为第二种方式会覆盖process object，进而影响一些依赖process object的第三方模块。
+
+__TIP:__
+> DefinePlugin 是对代码中的文本进行直接替换，所以变量的值一定要包含真正的引号。
+
+> Note that because the plugin does a direct text replacement, the value given to it must include actual quotes inside of the string itself. Typically, this is done either with alternate quotes, such as '"production"', or by using JSON.stringify('production').
 
 ## TypeScript的支持
 
