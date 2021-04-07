@@ -3,12 +3,15 @@
 
 ## process.env.NODE_ENV
 
-process是node的全局变量，这个变量有一个env属性。
+在webpack(>=4)中会根据mode参数来自动注入process.env.NODE_ENV全局常量：
 
-在webpack(>=4)中可以通过mode来配置：
+```
+mode: "development"
+process.env.NODE_ENV === ‘development’
 
-如果是development：mode: "development"
-如果是production: mode: "production"
+mode: "production"
+process.env.NODE_ENV === ‘production’
+```
 
 默认情况下webpack会将production作为mode的默认值。
 
@@ -23,14 +26,11 @@ plugins: [
   })
 ]
 ```
-### cross-env
 
-windows不支持NODE_ENV=development的这样的设置方式, 使用 cross-env命令 就能根据操作系统决定以unix方式设置环境变量，还是windows。
-
-### Environment variables
+## Environment variables
 在Webpack中， 很多人会将webpack的运行时变量和注入到代码中的变量搞混淆，它们的区别如下：
 
-#### Webpack运行时变量
+### Webpack运行时变量
 
 webpack是由NodeJS执行的，所以在执行webpack时，可以用以下方式配置运行时变量:
 
@@ -50,7 +50,7 @@ set CUSTOM_VAR=hello webpack --config webpack.config.js
 cross-env CUSTOM_VAR=hello webpack --config webpack.config.js
 ```
 
-#### 全局常量(Global constants)
+### 全局常量(Global constants)
 通过 Webpack 的 `DefinePlugin` 可以创建全局常量注入到代码中, 例如：
 
 ```js
