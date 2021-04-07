@@ -219,7 +219,7 @@ function App() {
 }
 ```
 
-下方是新 JSX 被转换编译后的结果：
+在React 17中，编译器会自动引入jsx的runtime，所以无需在import React
 
 ```js
 // 由编译器引入（禁止自己引入！）
